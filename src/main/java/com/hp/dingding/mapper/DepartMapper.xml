@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hp.dingding.mapper.DepartMapper">
+
+    <resultMap id="departBaseMap" type="com.hp.dingding.entity.Depart">
+        <id column="did" property="did"/>
+        <result column="dname" property="dname"/>
+        <result column="duty" property="duty"/>
+        <result column="credate" property="credate"/>
+        <result column="dstatus" property="dstatus"/>
+    </resultMap>
+
+    <select id="wuxiao" resultMap="departBaseMap">
+        select * from depart where dstatus = 0
+    </select>
+
+    <select id="youxiao" resultMap="departBaseMap">
+        select * from depart where dstatus = 1
+    </select>
+
+    <select id="getDeparts" resultType="com.hp.dingding.entity.Depart" resultMap="departBaseMap">
+        select * from depart where dstatus = 1
+    </select>
+
+    <insert id="addDepart" parameterType="com.hp.dingding.entity.Depart">
+        insert into depart(dname,duty,credate,dstatus)
+        values (#{dname},#{duty},#{credate},#{dstatus})
+    </insert>
+
+    <update id="editDept" parameterType="com.hp.dingding.entity.Depart">
+        update depart set dname = #{dname}, duty = #{duty} where did = #{did}
+    </update>
+
+    <update id="delDepart" parameterType="integer">
+        update depart set dstatus = 0 where did = #{did}
+    </update>
+    <update id="update" parameterMap="com.hp.dingding.entity.Depart">
+        update depart set dname=#{dname},duty=#{duty},credate=#{credate},dataus=#{dataus},where did=#{did}
+    </update>
+    <update id="delde" parameterMap="com.hp.dingding.entity.Depart">
+        delete from depart where did=#{did}
+    </update>
+</mapper>

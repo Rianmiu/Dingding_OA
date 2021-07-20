@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hp.dingding.mapper.EmployeeMapper">
+
+    <resultMap id="EmployeeBaseMap" type="com.hp.dingding.entity.Employee">
+        <id property="eid" column="eid"/>
+        <result property="ename" column="ename"/>
+        <result property="epass" column="epass"/>
+        <result property="realname" column="realname"/>
+        <result property="esex" column="esex"/>
+        <result property="entrydate" column="entrydate"/>
+        <result property="leavedate" column="leavedate"/>
+        <result property="position" column="position"/>
+        <result property="sal" column="sal"/>
+        <result property="estatus" column="estatus"/>
+        <association property="d" javaType="com.hp.dingding.entity.Depart">
+            <id property="did" column="did"/>
+            <result property="dname" column="dname"/>
+            <result property="duty" column="duty"/>
+            <result property="credate" column="credate"/>
+            <result property="dstatus" column="dstatus"/>
+        </association>
+    </resultMap>
+
+    <select id="queryByName" parameterType="string" resultMap="EmployeeBaseMap" resultType="list">
+        select * from employee e left join depart d on e.did = d.did
+        where e.realname = #{realname}
+    </select>
+
+    <select id="users" resultMap="EmployeeBaseMap" resultType="list">
+        select * from employee e left join depart d
+        on e.did = d.did
+        where estatus = 0
+    </select>
+
+    <select id="lizhi" resultMap="EmployeeBaseMap" resultType="list">
+        select * from employee e left join depart d
+        on e.did = d.did
+        where estatus = 1
+    </select>
+
+    <select id="login" parameterType="com.hp.dingding.entity.Employee" resultMap="EmployeeBaseMap">
+        select * from employee e,depart d
+        where e.did = d.did and e.ename = #{ename} and e.epass = #{epass}
+    </select>
+
+    <select id="queryZH" parameterType="string" resultType="integer">
+        select count(1) from employee where ename = #{username}
+    </select>
+
+    <insert id="addUser" parameterType="com.hp.dingding.entity.Employee">
+        insert into employee(ename,epass,realname,esex,entrydate,position,sal,estatus,did)
+        values(#{ename},#{epass},#{realname},#{esex},#{entrydate},#{position},#{sal},#{estatus},#{d.did})
+    </insert>
+
+    <update id="editUser" parameterType="com.hp.dingding.entity.Employee">
+        update employee set realname = #{realname}, ename = #{ename}, epass = #{epass}, esex = #{esex}, did = #{d.did}, position = #{position}
+        where eid = #{eid}
+    </update>
+
+    <update id="delUser" parameterType="integer">
+        update employee set estatus = 1 where eid = #{eid}
+    </update>
+
+</mapper>
